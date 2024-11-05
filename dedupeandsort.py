@@ -10,11 +10,15 @@ def sort_and_deduplicate(file_path):
     with open(file_path, 'r', newline=None) as file:
         lines = file.readlines()
     
-    # Strip whitespace from each line and filter out empty lines
-    lines = [line.strip() for line in lines if line.strip()]
+    # Strip whitespace, remove empty lines, and perform case-insensitive deduplication
+    deduped_lines = {}
+    for line in lines:
+        stripped_line = line.strip()
+        if stripped_line:  # Ignore empty lines
+            deduped_lines[stripped_line.lower()] = stripped_line  # Key by lowercase, store original
     
-    # Remove duplicates by converting to a set, then sort the set
-    unique_sorted_lines = sorted(set(lines))
+    # Sort the deduplicated lines (by the original case)
+    unique_sorted_lines = sorted(deduped_lines.values(), key=lambda x: x.lower())
     
     # Write the sorted unique lines back to a new file
     with open(output_path, 'w', newline='\n') as output_file:
@@ -29,4 +33,4 @@ if __name__ == "__main__":
         print("Usage: python script_name.py <input_file>")
     else:
         input_file = sys.argv[1]
-        sort_and_deduplicate
+        sort_and_deduplicate(input_file)
